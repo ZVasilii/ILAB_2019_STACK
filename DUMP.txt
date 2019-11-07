@@ -1,0 +1,24 @@
+
+***DUMP***
+
+Pointer on stack: 0061FEE8
+Capacity of stack: 10
+Calculated hash: 1051292602
+Canary 1: 127483224
+Canary 2: 159387223
+Size of stack: 10
+Pointer on data: 00E31620
+
+Element # 1 is  4292
+Element # 2 is  5144
+Element # 3 is  18704
+Element # 4 is  29054
+Element # 5 is  21923
+Element # 6 is  13977
+Element # 7 is  14963
+Element # 8 is  3555
+Element # 9 is  15625
+Element # 10 is  8172
+
+***END OF DUMP***
+
