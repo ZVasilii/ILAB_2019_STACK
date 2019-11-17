@@ -1,5 +1,10 @@
+#ifndef STACKPUSPLUS_STACK_FUNCTIONS_H
+#define STACKPUSPLUS_STACK_FUNCTIONS_H
+
+
 #include "STACK_ERRORS.h"
 
+#include "PRINT_FUNCTIONS.h"             ///Header file with print functions
 
 /**
  * Function that creates stack and initialize it
@@ -10,13 +15,16 @@
 template<typename T>
 bool StackDyn_t<T>::STACK_INIT()
 {
+    srand(time(NULL));
     capacity_ = STACK_CAPACITY;
     size_ = ZERO;
     data_ = (T *) calloc(STACK_CAPACITY, sizeof(T));
     hash_ = COUNTHASH();
-    CANARY1_ = CANARYETALON1;
-    CANARY2_ = CANARYETALON2;
-    if (OK_INIT_PUSH())
+    CANARYREF1 = rand() % 100000000;
+    CANARYREF2 = rand() % 100000000;
+    CANARY1_ = CANARYREF1;
+    CANARY2_ = CANARYREF2;
+    if (OK_W_O_SIZE())
         return false;
     return true;
 }
@@ -31,12 +39,12 @@ bool StackDyn_t<T>::STACK_INIT()
 template<typename T>
 bool StackDyn_t<T>::STACK_DESTROY()
 {
-    if (OK_POP())
+    if (OK())
         return false;
     free(data_);
     size_ = ZERO;
     hash_ = COUNTHASH();
-    if (OK_DESTROY())
+    if (OK_W_O_SIZE_POINTER())
         return false;
     return true;
 }
@@ -52,12 +60,12 @@ bool StackDyn_t<T>::STACK_DESTROY()
 template<typename T>
 bool StackDyn_t<T>::PUSH(T Value)
 {
-    if (OK_INIT_PUSH())
+    if (OK_W_O_SIZE())
         return false;
     this->data_[this->size_] = Value;
     this->size_++;
     hash_ = COUNTHASH();
-    if (OK_INIT_PUSH())
+    if (OK_W_O_SIZE())
         return false;
     return true;
 }
@@ -73,12 +81,12 @@ bool StackDyn_t<T>::PUSH(T Value)
 template<typename T>
 bool StackDyn_t<T>::POP(T *Value)
 {
-    if (OK_POP())
+    if (OK())
         return false;
     *Value = this->data_[this->size_ - 1];
     this->size_--;
     hash_ = COUNTHASH();
-    if (OK_INIT_PUSH())
+    if (OK_W_O_SIZE())
         return false;
     return true;
 }
@@ -92,7 +100,7 @@ bool StackDyn_t<T>::POP(T *Value)
 template<typename T>
 int StackDyn_t<T>::COUNTHASH()
 {
-    return ((int) data_ * (int) data_ + capacity_ - 1923 * size_ % 24 * (CANARY1_ % 25) * (CANARY2_ % 37));
+    return ((unsigned long long)((int) data_ * (int) data_ + capacity_ - 1923 * size_ % 24 * (CANARY1_ % 25) * (CANARY2_ % 37)));
 }
 
 
@@ -103,12 +111,12 @@ int StackDyn_t<T>::COUNTHASH()
  */
 
 template<typename T>
-char StackDyn_t<T>::OK_POP()
+char StackDyn_t<T>::OK()
 {
     if (this == nullptr) return STACK_POINTER;
     else if (capacity_ == 0) return ZERO_CAPACITY;
     else if (COUNTHASH() != hash_) return ERROR_HASH;
-    else if ((CANARY1_ != CANARYETALON1) || (CANARY2_ != CANARYETALON2)) return ERROR_CANAREES;
+    else if ((CANARY1_ != CANARYREF1) || (CANARY2_ != CANARYREF2)) return ERROR_CANAREES;
     else if (data_ == nullptr) return DATA_POINTER;
     else if (size_ == 0) return STACK_EMPTY;
     else if (size_ > capacity_) return STACK_FULL;
@@ -123,12 +131,12 @@ char StackDyn_t<T>::OK_POP()
  */
 
 template<typename T>
-char StackDyn_t<T>::OK_INIT_PUSH()
+char StackDyn_t<T>::OK_W_O_SIZE()
 {
     if (this == nullptr) return STACK_POINTER;
     else if (capacity_ == 0) return ZERO_CAPACITY;
     else if (COUNTHASH() != hash_) return ERROR_HASH;
-    else if ((CANARY1_ != CANARYETALON1) || (CANARY2_ != CANARYETALON2)) return ERROR_CANAREES;
+    else if ((CANARY1_ != CANARYREF1) || (CANARY2_ != CANARYREF2)) return ERROR_CANAREES;
     else if (data_ == nullptr) return DATA_POINTER;
     else if (size_ > capacity_) return STACK_FULL;
     else return EVERYTHING_GOOD;
@@ -143,13 +151,13 @@ char StackDyn_t<T>::OK_INIT_PUSH()
  */
 
 template<typename T>
-char StackDyn_t<T>::OK_DESTROY()
+char StackDyn_t<T>::OK_W_O_SIZE_POINTER()
 {
 
     if (this == nullptr) return STACK_POINTER;
     else if (capacity_ == 0) return ZERO_CAPACITY;
     else if (COUNTHASH() != hash_) return ERROR_HASH;
-    else if ((CANARY1_ != CANARYETALON1) || (CANARY2_ != CANARYETALON2)) return ERROR_CANAREES;
+    else if ((CANARY1_ != CANARYREF1) || (CANARY2_ != CANARYREF2)) return ERROR_CANAREES;
     else if (size_ > capacity_) return STACK_FULL;
     else return EVERYTHING_GOOD;
 }
@@ -160,36 +168,51 @@ char StackDyn_t<T>::OK_DESTROY()
  * @tparam T - type of data
  * @param Errorcode - Code of error from function OK()
  */
+
 template<typename T>
 void StackDyn_t<T>::ERRORMANAGE(char Errorcode)
 {
     if (Errorcode == ZERO_CAPACITY)
     {
         printf("CHECK YOUR STACK CAPACITY!");
+        DUMP();
+        DUMP_IN_FILE();
         abort();
     } else if (Errorcode == ERROR_HASH)
     {
         printf("CHECK YOUR HASH!");
+        DUMP();
+        DUMP_IN_FILE();
         abort();
     } else if (Errorcode == ERROR_CANAREES)
     {
         printf("CHECK YOUR CANAREES!");
+        DUMP();
+        DUMP_IN_FILE();
         abort();
     } else if (Errorcode == DATA_POINTER)
     {
         printf("CHECK YOUR DATA POINTER!");
+        DUMP();
+        DUMP_IN_FILE();
         abort();
     } else if (Errorcode == STACK_POINTER)
     {
         printf("CHECK YOUR STACK POINTER!");
+        DUMP();
+        DUMP_IN_FILE();
         abort();
     } else if (Errorcode == STACK_EMPTY)
     {
         printf("YOUR STACK IS EMPTY!");
+        DUMP();
+        DUMP_IN_FILE();
         abort();
     } else if (Errorcode == STACK_FULL)
     {
         printf("YOUR STACK IS FULL!");
+        DUMP();
+        DUMP_IN_FILE();
         abort();
     }
 }
@@ -210,7 +233,7 @@ void StackDyn_t<T>::DUMP()
     printf("\n");
     printf("Pointer on stack: %p\n", this);
     printf("Capacity of stack: %d\n", capacity_);
-    printf("Calculated hash: %d\n", hash_);
+    printf("Calculated hash: %d\n", abs(hash_));
     printf("Canary 1: %d\n", CANARY1_);
     printf("Canary 2: %d\n", CANARY2_);
     printf("Size of stack: %d\n", size_);
@@ -242,7 +265,7 @@ void StackDyn_t<T>::DUMP_IN_FILE()
     fprintf(File,"\n");
     fprintf(File,"Pointer on stack: %p\n", this);
     fprintf(File,"Capacity of stack: %d\n", capacity_);
-    fprintf(File,"Calculated hash: %d\n", hash_);
+    fprintf(File,"Calculated hash: %d\n", abs(hash_));
     fprintf(File,"Canary 1: %d\n", CANARY1_);
     fprintf(File,"Canary 2: %d\n", CANARY2_);
     fprintf(File,"Size of stack: %d\n", size_);
@@ -260,99 +283,4 @@ void StackDyn_t<T>::DUMP_IN_FILE()
 
 }
 
-/**
- * Functions that print variables with different types
- * @tparam T - type of data
- * @param Values with different types
- */
-
-template <typename T>
-void StackDyn_t<T>::Print(long long ValueL)
-{
-    printf(" %lld\n",ValueL);
-}
-
-template <typename T>
-void StackDyn_t<T>::Print(double ValueD)
-{
-    printf(" %lg\n",ValueD);
-}
-
-template <typename T>
-void StackDyn_t<T>::Print(char ValueC)
-{
-    printf(" %c\n",ValueC);
-}
-
-template <typename T>
-void StackDyn_t<T>::Print(unsigned long long ValueU)
-{
-    printf(" %llu\n",ValueU);
-}
-
-template <typename T>
-void StackDyn_t<T>::Print(int ValueI)
-{
-    printf(" %d\n",ValueI);
-}
-
-template <typename T>
-void StackDyn_t<T>::Print(unsigned ValueU)
-{
-    printf(" %u\n",ValueU);
-}
-
-template <typename T>
-void StackDyn_t<T>::Print(unsigned char ValueUC)
-{
-    printf(" %u\n",ValueUC);
-}
-
-
-/**
- * Functions that write variables with different types in file
- * @tparam T - type of data
- * @param Values with different types
- */
-
-template <typename T>
-void StackDyn_t<T>::FilePrint(FILE *file, long long ValueL)
-{
-    fprintf(file," %lld\n", ValueL);
-}
-
-template <typename T>
-void StackDyn_t<T>::FilePrint(FILE *file, double ValueD)
-{
-    fprintf(file, " %lg\n", ValueD);
-}
-
-template <typename T>
-void StackDyn_t<T>::FilePrint(FILE *file, char ValueC)
-{
-    fprintf(file, " %c\n", ValueC);
-}
-
-template <typename T>
-void StackDyn_t<T>::FilePrint(FILE *file, unsigned long long ValueU)
-{
-    fprintf(file, " %llu\n",ValueU);
-}
-
-template <typename T>
-void StackDyn_t<T>::FilePrint(FILE *file, int ValueI)
-{
-    fprintf(file, " %d\n",ValueI);
-}
-
-template <typename T>
-void StackDyn_t<T>::FilePrint(FILE *file, unsigned ValueU)
-{
-    fprintf(file, " %u\n",ValueU);
-}
-
-template <typename T>
-void StackDyn_t<T>::FilePrint(FILE *file, unsigned char ValueUC)
-{
-    fprintf(file, " %u\n",ValueUC);
-}
+#endif //STACKPUSPLUS_STACK_FUNCTIONS_H

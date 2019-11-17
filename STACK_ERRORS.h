@@ -1,3 +1,6 @@
+#ifndef  STACKPUSPLUS_STACK_ERRORS_H
+#define  STACKPUSPLUS_STACK_ERRORS_H
+
 enum ERRORS                 ///Code-names for different errors
 {
     EVERYTHING_GOOD = 0,
@@ -9,3 +12,5 @@ enum ERRORS                 ///Code-names for different errors
     STACK_EMPTY = 6,
     STACK_FULL = 7,
 };
+
+#endif //STACKPUSPLUS_STACK_ERRORS_H

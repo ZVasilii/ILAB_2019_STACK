@@ -16,7 +16,7 @@
 
 */
 
-
+///AUTOEXPAND, NEWDELETE, TEXTCOLOR,CANARREEES, MASSIVE HASH, DEFUNDEF, YAZVIMOST'
 
 #include "STACK_FUNCTIONS_DECLARATION.h"
 
@@ -32,7 +32,7 @@ int main()
     ///Testing function INIT
 
     check_errors = Stack.STACK_INIT();
-    if (!check_errors) Stack.ERRORMANAGE(Stack.OK_INIT_PUSH());
+    if (!check_errors) Stack.ERRORMANAGE(Stack.OK_W_O_SIZE());
 
 
     ///Testing function PUSH
@@ -41,7 +41,7 @@ int main()
     for (int i = 0; i < 10; i++)
     {
        check_errors = Stack.PUSH(rand() % 100000);
-       if (!check_errors) Stack.ERRORMANAGE(Stack.OK_INIT_PUSH());
+       if (!check_errors) Stack.ERRORMANAGE(Stack.OK_W_O_SIZE());
     }
 
     ///Testing functions DUMP and DUMP_IN_FILE
@@ -54,9 +54,9 @@ int main()
     for (int j = 0; j < 10; j++)
     {
         check_errors = Stack.POP(&Value);
-        if (!check_errors) Stack.ERRORMANAGE(Stack.OK_POP());
+        if (!check_errors) Stack.ERRORMANAGE(Stack.OK());
         printf("Popped element is ");
-        Stack.Print( Value);
+        Print( Value);
         printf("\n");
     }
 
@@ -64,7 +64,7 @@ int main()
     ///Testing function DESTROY
 
     check_errors = Stack.STACK_DESTROY();
-    if (!check_errors) Stack.ERRORMANAGE(Stack.OK_DESTROY());
+    if (!check_errors) Stack.ERRORMANAGE(Stack.OK_W_O_SIZE_POINTER());
 
     return 0;
 }
