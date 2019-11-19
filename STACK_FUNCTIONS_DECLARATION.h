@@ -1,14 +1,21 @@
 #ifndef STACKPUSPLUS_STACK_FUNCTIONS_DECLARATION_H
 #define STACKPUSPLUS_STACK_FUNCTIONS_DECLARATION_H
 
+
 #include <cstddef>
 #include <cstdlib>
 #include <cstdio>
 #include <ctime>
+#include<windows.h>
+
 
 const int ZERO = 0;
-const int STACK_CAPACITY = 10;                                           ///Maximum size of stack
-const char FILENAME[] = "F:\\Projects on C\\STACKPLUSPLUS\\DUMP.txt";    ///File with dumped information
+const int STACK_CAPACITY_ADD = 10;                                           ///Maximum size of stack
+const char FILENAME[] = "F:\\Projects on C\\STACKPLUSPLUS\\DUMP.txt";        ///File with dumped information
+const int TEST_NUMBER = 20;                                                  ///Number of elements in testing function
+
+typedef int DATATYPE;                                                         ///Changing type of data
+
 
 
 template<typename T>
@@ -25,7 +32,7 @@ private:
     size_t capacity_;                    ///Maximum capacity of stack
     unsigned long long  hash_;           ///Hash, which calculates on every step
 
-    int COUNTHASH();                     ///Function that calculates hash
+    unsigned long long COUNTHASH();      ///Function that calculates hash
 
 public:
 
@@ -37,6 +44,8 @@ public:
 
     bool STACK_DESTROY();                ///Function that deletes stack and frees memory
 
+    bool STACK_REALLOC();                ///Function that adds memory in stack
+
     char OK();                           ///Function that checks if everything is working correctly
 
     char OK_W_O_SIZE();                  ///Function that checks if everything is working correctly
@@ -46,6 +55,10 @@ public:
     void DUMP();                         ///Function that shows all current information about stack
 
     void DUMP_IN_FILE();                 ///Function that write all current information about stack in file
+
+    void UNIT_TEST();                    ///Function that testing function push and pop
+
+    void INTRODUCTION();                 /// Function that prints main information about the programm
 
     void ERRORMANAGE(char Errorcode);    ///Function that shows information about different errors in stack
 

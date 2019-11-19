@@ -3,7 +3,7 @@
  *    https://en.wikipedia.org/wiki/Stack_(abstract_data_type)
  *
       \author  Zaitsev Vasilii, MIPT
-      \version 4.0
+      \version 5.0
       \date    November 2019
 
       \warning Use the  stack functions in following order:
@@ -16,50 +16,27 @@
 
 */
 
-///AUTOEXPAND, NEWDELETE, TEXTCOLOR,CANARREEES, MASSIVE HASH, DEFUNDEF, YAZVIMOST'
+
 
 #include "STACK_FUNCTIONS_DECLARATION.h"
 
 
-typedef int DATATYPE;               ///Changing type of data
 
 int main()
 {
     bool check_errors = false;
-    DATATYPE Value = ZERO;
     StackDyn_t<DATATYPE> Stack;    ///Creating stack
+
+    Stack.INTRODUCTION();
 
     ///Testing function INIT
 
     check_errors = Stack.STACK_INIT();
     if (!check_errors) Stack.ERRORMANAGE(Stack.OK_W_O_SIZE());
 
+    ///Testing functionallity of stack
 
-    ///Testing function PUSH
-
-    srand(time(nullptr));
-    for (int i = 0; i < 10; i++)
-    {
-       check_errors = Stack.PUSH(rand() % 100000);
-       if (!check_errors) Stack.ERRORMANAGE(Stack.OK_W_O_SIZE());
-    }
-
-    ///Testing functions DUMP and DUMP_IN_FILE
-
-    Stack.DUMP();
-    Stack.DUMP_IN_FILE();
-
-    ///Testing function POP
-
-    for (int j = 0; j < 10; j++)
-    {
-        check_errors = Stack.POP(&Value);
-        if (!check_errors) Stack.ERRORMANAGE(Stack.OK());
-        printf("Popped element is ");
-        Print( Value);
-        printf("\n");
-    }
-
+    Stack.UNIT_TEST();
 
     ///Testing function DESTROY
 

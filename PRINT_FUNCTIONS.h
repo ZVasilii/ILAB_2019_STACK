@@ -5,7 +5,28 @@
 
 #include <cstdio>
 
-void Print(long long ValueL);        ///Functions that print variables with different types
+enum ConsoleColor
+{
+    Black         = 0,
+    Blue          = 1,
+    Green         = 2,
+    Cyan          = 3,
+    Red           = 4,
+    Magenta       = 5,
+    Brown         = 6,
+    LightGray     = 7,
+    DarkGray      = 8,
+    LightBlue     = 9,
+    LightGreen    = 10,
+    LightCyan     = 11,
+    LightRed      = 12,
+    LightMagenta  = 13,
+    Yellow        = 14,
+    White         = 15
+};
+
+
+void Print(long long ValueL);                    ///Functions that print variables with different types
 
 void Print(double ValueD);
 
@@ -19,9 +40,11 @@ void Print(unsigned ValueU);
 
 void Print(unsigned char ValueUC);
 
+void SetColor(int text, int background);         ///Function that changes color of text in console
 
 
-void FilePrint(FILE *file, long long ValueL);  ///Functions that print variables with different types in file
+
+void FilePrint(FILE *file, long long ValueL);    ///Functions that print variables with different types in file
 
 void FilePrint(FILE *file, double ValueD);
 
@@ -123,5 +146,19 @@ void FilePrint(FILE *file, unsigned char ValueUC)
 {
     fprintf(file, " %u\n", ValueUC);
 }
+
+
+/**
+ * Function that changes color of text in console
+ * @param text - color of the text in console
+ * @param background - color of the background in console
+ */
+
+void SetColor(int text, int background)
+{
+    HANDLE hStdOut = GetStdHandle(STD_OUTPUT_HANDLE);
+    SetConsoleTextAttribute(hStdOut, (WORD)((background << 4) | text));
+}
+
 
 #endif //STACKPLUSPLUS_PRINT_FUNCTIONS_H
